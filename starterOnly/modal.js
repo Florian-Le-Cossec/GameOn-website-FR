@@ -21,6 +21,16 @@ const radios = document.querySelectorAll('input[name="location"]');
 const gcuInput = document.querySelector('#checkbox1');
 const form = document.querySelector('form');
 
+//object error messages
+const messages = {
+  stringMessage: 'Ce champ nécessite au minimum 2 caractères.',
+  emailMessage: 'Veuillez entrer une adresse e-mail valide.',
+  dateMessage1: 'Vous devez avoir 18 ans ou plus.',
+  dateMessage2: 'Veuillez entrer une date de naissance valide.',
+  quantityMessage: 'Ce champ nécessite une valeur numérique.',
+  radioMessage: 'Veuillez choisir un tournoi auquel vous souhaitez participer cette année.',
+  checkBoxMessage: 'Veuillez accepter les conditons d\'utilisation.',
+}
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -38,74 +48,106 @@ function closeModal() {
 // close modal event
 closeModalBtn.addEventListener('click', closeModal);
 
+// show + remove error Message
+function showErrorMessage(element, message) {
+  element.parentElement.dataset.errorVisible = 'true';
+  element.parentElement.dataset.error = message;
+}
+function removeErrorMessage(element) {
+  delete element.parentElement.dataset.errorVisible;
+  delete element.parentElement.dataset.error;
+}
 
-// form validation + submit
-
+// validate form
 function verifyStringInput(string) {
   if (string.value.length < 2) {
-    console.error('Ce champ nécessite au minimum 2 caractères.');
+    showErrorMessage(string, messages.stringMessage);
     return false;
   }
+  removeErrorMessage(string);
   return true;
-};
+}
 
 function verifyEmailInput(email) {
   const emailValue = email.value;
   const emailRegex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
   if(!emailRegex.test(emailValue)) {
-    console.error('Veuillez entrer une adresse e-mail valide.');
+    showErrorMessage(email, messages.emailMessage);
     return false;
   }
+  removeErrorMessage(email);
   return true;
 };
 
 function verifyBirthdate(date) {
-  const birthdate = new Date(date.value)
-  const currentDate = new Date()
+  const birthdate = new Date(date.value);
+  const currentDate = new Date();
   const age = currentDate.getFullYear() - birthdate.getFullYear() - (
     (currentDate.getMonth() < birthdate.getMonth()) ||
     ((currentDate.getMonth() === birthdate.getMonth()) && (currentDate.getDate() < birthdate.getDate())));
 
   if(age < 18) {
-    console.error('Vous devez avoir 18 ans ou plus.');
+    showErrorMessage(date, messages.dateMessage1);
     return false;
   }
   if(date.value === '') {
-    console.error('Veuillez entrer une date de naissance valide.');
+    showErrorMessage(date, messages.dateMessage2);
     return false;
   }
-  return true
+  removeErrorMessage(date);
+  return true;
 };
 
 function verifyQuantity(quantity) {
-  const quantityValue = quantity.value
+  const quantityValue = quantity.value;
   const quantityRegex = new RegExp('^[0-9]{1,2}$')
   if(!quantityRegex.test(quantityValue)) {
-    console.error('Ce champ nécessite une valeur numérique.');
+    showErrorMessage(quantity, messages.quantityMessage);
     return false;
   }
+  removeErrorMessage(quantity);
   return true
 };
 
 function verifyRadios(cities) {
   const isChecked = Array.from(cities).some(radio => radio.checked);
   if(!isChecked) {
-    console.error('Veuillez choisir un tournoi auquel vous souhaitez participer cette année.');
+    showErrorMessage(cities[0], messages.radioMessage);
     return false
   }
+  removeErrorMessage(cities[0]);
   return true
 };
 
 function verifyGcu(gcu) {
   if(!gcu.checked) {
-    console.error('Veuillez accepter les conditons d\'utilisation.');
+    showErrorMessage(gcu, messages.checkBoxMessage);
     return false
   }
+  removeErrorMessage(gcu);
   return true
 };
 
-//eventListener
+//function to validate form
+function validate (e) {
+  e.preventDefault()
+  const isFirstNameValid = verifyStringInput(firstNameInput);
+  const isLastNameValid = verifyStringInput(lastNameInput);
+  const isEmailValid = verifyEmailInput(emailInput);
+  const isBirthdateValid = verifyBirthdate(birthDateInput);
+  const isQuantityValid = verifyQuantity(quantityInput);
+  const isRadioSelected = verifyRadios(radios);
+  const isGcuChecked = verifyGcu(gcuInput);
 
+  if(isFirstNameValid && isLastNameValid && isEmailValid && isBirthdateValid && isQuantityValid && isRadioSelected && isGcuChecked){
+    form.reset();
+    alert('nice');
+    closeModal()
+  }
+}
+
+//eventListener
 firstNameInput.addEventListener('input', () => {
   verifyStringInput(firstNameInput);
 });
@@ -128,19 +170,5 @@ gcuInput.addEventListener('input', () => {
   verifyGcu(gcuInput);
 });
 
-function validate (e) {
-  e.preventDefault()
-  const isFirstNameValid = verifyStringInput(firstNameInput);
-  const isLastNameValid = verifyStringInput(lastNameInput);
-  const isEmailValid = verifyEmailInput(emailInput);
-  const isBirthdateValid = verifyBirthdate(birthDateInput);
-  const isQuantityValid = verifyQuantity(quantityInput);
-  const isRadioSelected = verifyRadios(radios);
-  const isGcuChecked = verifyGcu(gcuInput);
-
-  if(isFirstNameValid && isLastNameValid && isEmailValid && isBirthdateValid && isQuantityValid && isRadioSelected && isGcuChecked){
-    console.log('ok')
-  }
-}
-
+//eventListener to submit the form
 form.addEventListener('submit', e => validate(e))
