@@ -330,6 +330,38 @@ input[data-error]::after {
   cursor: pointer;
   border: 0;
 }
+
+/* confirm modal */
+
+.confirm-modal {
+  display: none;
+  min-height: 700px;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.confirm-modal__message {
+  font-size: 36px;
+  text-align: center;
+}
+
+.confirm-modal__button {
+  background: #fe142f;
+  display: block;
+  margin: 0 auto;
+  border-radius: 7px;
+  font-size: 1rem;
+  padding: 12px 82px;
+  color: #fff;
+  cursor: pointer;
+  border: 0;
+  position: absolute;
+  bottom: 5px;
+}
+
 /* custom select styles */
 .custom-select {
   position: relative;

@@ -20,6 +20,8 @@ const quantityInput = document.querySelector('#quantity');
 const radios = document.querySelectorAll('input[name="location"]');
 const gcuInput = document.querySelector('#checkbox1');
 const form = document.querySelector('form');
+const confirmModal = document.querySelector('.confirm-modal')
+const confitmModalButton = document.querySelector('.confirm-modal__button')
 
 //object error messages
 const messages = {
@@ -43,10 +45,9 @@ function launchModal() {
 // close modal form
 function closeModal() {
   modalbg.style.display = "none";
+  confirmModal.style.display = "none"
+  form.style.display = 'block'
 }
-
-// close modal event
-closeModalBtn.addEventListener('click', closeModal);
 
 // show + remove error Message
 function showErrorMessage(element, message) {
@@ -107,31 +108,32 @@ function verifyQuantity(quantity) {
     return false;
   }
   removeErrorMessage(quantity);
-  return true
+  return true;
 };
 
 function verifyRadios(cities) {
   const isChecked = Array.from(cities).some(radio => radio.checked);
   if(!isChecked) {
     showErrorMessage(cities[0], messages.radioMessage);
-    return false
+    return false;
   }
   removeErrorMessage(cities[0]);
-  return true
+  return true;
 };
 
 function verifyGcu(gcu) {
   if(!gcu.checked) {
     showErrorMessage(gcu, messages.checkBoxMessage);
-    return false
+    return false;
   }
   removeErrorMessage(gcu);
-  return true
+  return true;
 };
+
 
 //function to validate form
 function validate (e) {
-  e.preventDefault()
+  e.preventDefault();
   const isFirstNameValid = verifyStringInput(firstNameInput);
   const isLastNameValid = verifyStringInput(lastNameInput);
   const isEmailValid = verifyEmailInput(emailInput);
@@ -141,13 +143,13 @@ function validate (e) {
   const isGcuChecked = verifyGcu(gcuInput);
 
   if(isFirstNameValid && isLastNameValid && isEmailValid && isBirthdateValid && isQuantityValid && isRadioSelected && isGcuChecked){
+    form.style.display = 'none';
+    confirmModal.style.display = 'flex';
     form.reset();
-    alert('nice');
-    closeModal()
   }
 }
 
-//eventListener
+//eventListener to verify input
 firstNameInput.addEventListener('input', () => {
   verifyStringInput(firstNameInput);
 });
@@ -170,5 +172,11 @@ gcuInput.addEventListener('input', () => {
   verifyGcu(gcuInput);
 });
 
+// close modal event
+closeModalBtn.addEventListener('click', closeModal);
+
 //eventListener to submit the form
-form.addEventListener('submit', e => validate(e))
+form.addEventListener('submit', e => validate(e));
+
+//eventListener to close confirm modal
+confitmModalButton.addEventListener('click', closeModal)
