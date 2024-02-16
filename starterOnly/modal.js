@@ -1,12 +1,3 @@
-function editNav() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
-}
-
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
@@ -20,8 +11,10 @@ const quantityInput = document.querySelector('#quantity');
 const radios = document.querySelectorAll('input[name="location"]');
 const gcuInput = document.querySelector('#checkbox1');
 const form = document.querySelector('form');
-const confirmModal = document.querySelector('.confirm-modal')
-const confitmModalButton = document.querySelector('.confirm-modal__button')
+const confirmModal = document.querySelector('.confirm-modal');
+const confitmModalButton = document.querySelector('.confirm-modal__button');
+const btnHam = document.querySelector('.btn-ham')
+const mainNavbar = document.querySelector('.main-navbar')
 
 //object error messages
 const messages = {
@@ -34,30 +27,44 @@ const messages = {
   checkBoxMessage: 'Veuillez accepter les conditons d\'utilisation.',
 }
 
+
+// open responsive menu
+function handleToggleMenu() {
+  mainNavbar.classList.toggle('main-navbar-toggle')
+
+  if (mainNavbar.classList.contains('main-navbar-toggle')) {
+    btnHam.style.color = "red";
+  }
+  else {
+    btnHam.style.color = "black"
+  }
+}
+
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
+
 
 // launch modal form
 function launchModal() {
   modalbg.style.display = "block";
-}
+};
 
 // close modal form
 function closeModal() {
   modalbg.style.display = "none";
   confirmModal.style.display = "none"
   form.style.display = 'block'
-}
+};
 
 // show + remove error Message
 function showErrorMessage(element, message) {
   element.parentElement.dataset.errorVisible = 'true';
   element.parentElement.dataset.error = message;
-}
+};
 function removeErrorMessage(element) {
   delete element.parentElement.dataset.errorVisible;
   delete element.parentElement.dataset.error;
-}
+};
 
 // validate form
 function verifyStringInput(string) {
@@ -67,13 +74,13 @@ function verifyStringInput(string) {
   }
   removeErrorMessage(string);
   return true;
-}
+};
 
 function verifyEmailInput(email) {
   const emailValue = email.value;
   const emailRegex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
-  if(!emailRegex.test(emailValue)) {
+  if (!emailRegex.test(emailValue)) {
     showErrorMessage(email, messages.emailMessage);
     return false;
   }
@@ -88,11 +95,11 @@ function verifyBirthdate(date) {
     (currentDate.getMonth() < birthdate.getMonth()) ||
     ((currentDate.getMonth() === birthdate.getMonth()) && (currentDate.getDate() < birthdate.getDate())));
 
-  if(age < 18) {
+  if (age < 18) {
     showErrorMessage(date, messages.dateMessage1);
     return false;
   }
-  if(date.value === '') {
+  if (date.value === '') {
     showErrorMessage(date, messages.dateMessage2);
     return false;
   }
@@ -103,7 +110,7 @@ function verifyBirthdate(date) {
 function verifyQuantity(quantity) {
   const quantityValue = quantity.value;
   const quantityRegex = new RegExp('^[0-9]{1,2}$')
-  if(!quantityRegex.test(quantityValue)) {
+  if (!quantityRegex.test(quantityValue)) {
     showErrorMessage(quantity, messages.quantityMessage);
     return false;
   }
@@ -113,7 +120,7 @@ function verifyQuantity(quantity) {
 
 function verifyRadios(cities) {
   const isChecked = Array.from(cities).some(radio => radio.checked);
-  if(!isChecked) {
+  if (!isChecked) {
     showErrorMessage(cities[0], messages.radioMessage);
     return false;
   }
@@ -122,7 +129,7 @@ function verifyRadios(cities) {
 };
 
 function verifyGcu(gcu) {
-  if(!gcu.checked) {
+  if (!gcu.checked) {
     showErrorMessage(gcu, messages.checkBoxMessage);
     return false;
   }
@@ -132,7 +139,7 @@ function verifyGcu(gcu) {
 
 
 //function to validate form
-function validate (e) {
+function validate(e) {
   e.preventDefault();
   const isFirstNameValid = verifyStringInput(firstNameInput);
   const isLastNameValid = verifyStringInput(lastNameInput);
@@ -142,12 +149,12 @@ function validate (e) {
   const isRadioSelected = verifyRadios(radios);
   const isGcuChecked = verifyGcu(gcuInput);
 
-  if(isFirstNameValid && isLastNameValid && isEmailValid && isBirthdateValid && isQuantityValid && isRadioSelected && isGcuChecked){
+  if (isFirstNameValid && isLastNameValid && isEmailValid && isBirthdateValid && isQuantityValid && isRadioSelected && isGcuChecked) {
     form.style.display = 'none';
     confirmModal.style.display = 'flex';
     form.reset();
   }
-}
+};
 
 //eventListener to verify input
 firstNameInput.addEventListener('input', () => {
@@ -172,6 +179,9 @@ gcuInput.addEventListener('input', () => {
   verifyGcu(gcuInput);
 });
 
+//open menu event
+btnHam.addEventListener('click', handleToggleMenu)
+
 // close modal event
 closeModalBtn.addEventListener('click', closeModal);
 
@@ -179,4 +189,4 @@ closeModalBtn.addEventListener('click', closeModal);
 form.addEventListener('submit', e => validate(e));
 
 //eventListener to close confirm modal
-confitmModalButton.addEventListener('click', closeModal)
+confitmModalButton.addEventListener('click', closeModal);
