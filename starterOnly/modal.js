@@ -30,14 +30,14 @@ const messages = {
 
 // open responsive menu
 function handleToggleMenu() {
-  mainNavbar.classList.toggle('main-navbar-toggle')
+  mainNavbar.classList.toggle('main-navbar-toggle');
 
+  btnHam.style.color = "black";
+  
   if (mainNavbar.classList.contains('main-navbar-toggle')) {
     btnHam.style.color = "red";
   }
-  else {
-    btnHam.style.color = "black"
-  }
+  
 }
 
 // launch modal event
